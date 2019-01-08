@@ -74,4 +74,4 @@ This program is not associated with the Universidade Federal do Rio Grande do Su
 
 ## Contributor(s)
 
-* Rafael B. Audibert - [Github](github.com/rafaeelaudibert) | [Website](inf.ufrgs.br/~rbaudibert)
+* Rafael B. Audibert - [Github](https://github.com/rafaeelaudibert) | [Website](https://inf.ufrgs.br/~rbaudibert)
