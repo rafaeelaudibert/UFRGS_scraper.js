@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer')
 const fs = require('fs-extra')
 
 // Constants
-const DEFAULT_PATH = 'https://www.ufrgs.br/vestibular/cv2018/listao/'
+const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${process.env.YEAR || 2018}/listao/`
 const PATHS = Array(26).fill(0).map((_, index) => 'arquivo_' + String.fromCharCode(index + 97))
 const TABLE_BODY_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody'
 const TABLE_BODY_ROW_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody > tr:nth-child(INDEX)'
