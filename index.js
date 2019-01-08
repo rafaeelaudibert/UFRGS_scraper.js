@@ -1,9 +1,11 @@
 // Requires
 const puppeteer = require('puppeteer')
 const fs = require('fs-extra')
+const assert = require('assert');
 
 // Constants
-const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${process.env.YEAR || 2018}/listao/`
+const YEAR = process.env.YEAR || 2018
+const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`
 const PATHS = Array(26).fill(0).map((_, index) => 'arquivo_' + String.fromCharCode(index + 97))
 const TABLE_BODY_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody'
 const TABLE_BODY_ROW_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody > tr:nth-child(INDEX)'
@@ -100,7 +102,10 @@ function main() {
     const std_in = process.stdin
     std_in.setEncoding('utf-8')
     std_in.on('data', async data => {
-        // Only run the code if the user prompted 'YES' 
+        // Only run the code if the user prompted 'YES'
+
+
+
         if (data === 'YES\r\n' || data == 'YES\n') {
             const hrstart = process.hrtime()
 
@@ -119,6 +124,11 @@ function main() {
         process.exit()
     })
 }
+
+// Makes sure that here is a valid year
+assert.ok(YEAR >= 2016 && YEAR <= 2019,
+    'The YEAR you want to access is not valid, use a YEAR between 2016 and 2019');
+
 
 // Calls the main process
 main()

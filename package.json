@@ -15,6 +15,7 @@
   "author": "Rafael B. Audibert",
   "license": "ISC",
   "dependencies": {
+    "assert": "^1.4.1",
     "dotenv": "^6.2.0",
     "fs-extra": "^7.0.1",
     "puppeteer": "^1.11.0"
