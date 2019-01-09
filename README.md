@@ -2,6 +2,8 @@
 
 Scraper written in `JavaScript`, using `Node.js` to fetch all the freshmen in UFRGS vestibular.
 
+There is also a `Shell` scraper with less functionalities but faster
+
 This code is tested to run in UFRGS's "Listão" in the 2016, 2017, 2018 and (probably) 2019 editions. 
 There are no warranties that it will run in future editions, as this is only a scraper and depends in the website layout, which can be changed by UFRGS at any time.
 
@@ -72,6 +74,12 @@ The latter is a plain text file containing one freshman name per line, _without 
 
 This program is not associated with the Universidade Federal do Rio Grande do Sul in any ways, and it was just created to more easily fetch the freshmen through the popular Listão do Vestibular.
 
-## Contributor(s)
+---
+# Extra
+There is also a `scraper.sh` script (99% courtesy of [@fercgomes](https://github.com/fercgomes) with some minor adjustments made by me) which only works on *nix-like OS's. It can be run giving executable rights to the file with `chmod +x scraper.sh` and running it normally, after so. You can pass two parameters to it, `COURSE` which refers to the course you want to obtain the data and `YEAR` which refers to the year you want to search in the "Listão". If you don't pass the parameters, they will default to `COURSE="Ciência da Computação"` and `YEAR="2018"`.
 
-* Rafael B. Audibert - [Github](https://github.com/rafaeelaudibert) | [Website](https://inf.ufrgs.br/~rbaudibert)
+
+This way, you can call it like so:
+```bash
+$ YEAR="2018" COURSE="Ciência da Computação" ./scraper.sh
+```
