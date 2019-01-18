@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 const assert = require('assert');
 
 // Constants
-const YEAR = process.env.YEAR || 2018
+const YEAR = process.env.YEAR || 2019
 const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`
 const PATHS = Array(26).fill(0).map((_, index) => 'arquivo_' + String.fromCharCode(index + 97))
 const TABLE_BODY_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody'
@@ -103,8 +103,6 @@ function main() {
     std_in.setEncoding('utf-8')
     std_in.on('data', async data => {
         // Only run the code if the user prompted 'YES'
-
-
 
         if (data === 'YES\r\n' || data == 'YES\n') {
             const hrstart = process.hrtime()

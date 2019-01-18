@@ -6,7 +6,7 @@
 #   > Handled the "<div class="asterisco">*</div>" string
 #   > File saving
 COURSE=${COURSE:="Ciência da Computação"};
-YEAR=${YEAR:="2018"};
+YEAR=${YEAR:="2019"};
 FILENAME="$COURSE.txt"
 
 [ -e "$FILENAME" ] && rm "$FILENAME"
