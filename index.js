@@ -5,7 +5,7 @@ const assert = require('assert');
 
 // Constants
 const YEAR = process.env.YEAR || 2019
-const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`
+const DEFAULT_PATH = YEAR >= 2019 ? `http://vestibular.ufrgs.br/cv${YEAR}/listao/` : `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`
 const PATHS = Array(26).fill(0).map((_, index) => 'arquivo_' + String.fromCharCode(index + 97))
 const TABLE_BODY_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody'
 const TABLE_BODY_ROW_SELECTOR = '#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody > tr:nth-child(INDEX)'
