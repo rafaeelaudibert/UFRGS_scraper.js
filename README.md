@@ -13,7 +13,7 @@ There are no warranties that it will run in future editions, as this is only a s
 
 You must have `Node.js` installed in your computer to run this code. You can download it [here](https://nodejs.org/en/download/).
 
-You can clone this repository running `git clone https://github.com/rafaeelaudibert/UFRGS_vestibular_scraper.git && cd UFRGS_vestibular_scraper`.
+You can clone this repository running `git clone https://github.com/rafaeelaudibert/UFRGS_scraper.js.git && cd UFRGS_scraper`.
 
 After, you need to install the requirements, which can be easily installed with `npm install`.
 
