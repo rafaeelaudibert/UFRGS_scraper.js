@@ -1,6 +1,6 @@
 {
-  "name": "vestibularscraper",
-  "version": "0.0.1",
+  "name": "ufrgs_scraper",
+  "version": "1.0.0",
   "description": "Scraper para pegar ingressantes no Vestibular da UFRGS",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "assert": "^1.4.1",
     "dotenv": "^6.2.0",
     "fs-extra": "^7.0.1",
-    "puppeteer": "^1.13.0",
+    "puppeteer": "^10.0.0",
     "snyk": "^1.230.5"
   },
   "snyk": true
