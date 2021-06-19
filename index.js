@@ -65,8 +65,8 @@ async function run() {
 
       // Add the name and the starting semester for this freshman
       freshmen[htmlElement[3]].push({
-        nome: htmlElement[1],
-        semestre: htmlElement[2],
+        name: htmlElement[1],
+        semester: htmlElement[2],
       });
     }
   }
@@ -80,7 +80,7 @@ async function run() {
     const parsedCourse = course.toLowerCase().replace(REGEX, "");
     const json = JSON.stringify(students);
     const text = students
-      .map((s) => s.nome + "\n")
+      .map((s) => s.name + "\n")
       .reduce((acc, val) => acc + val, "");
 
     console.log(`Creating files for ${parsedCourse}`);
