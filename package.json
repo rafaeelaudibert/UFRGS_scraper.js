@@ -5,9 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "scraper",
@@ -20,8 +18,6 @@
     "assert": "^1.4.1",
     "dotenv": "^6.2.0",
     "fs-extra": "^7.0.1",
-    "puppeteer": "^10.0.0",
-    "snyk": "^1.230.5"
-  },
-  "snyk": true
+    "puppeteer": "^10.0.0"
+  }
 }
