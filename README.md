@@ -4,8 +4,11 @@ Scraper written in `JavaScript`, using `Node.js` to fetch all the freshmen in UF
 
 There is also a `Shell` scraper with less functionalities but a lot faster
 
-This code is tested to run in UFRGS's "Listão" from the 2016 to 2021 editions.
+This code is tested to run in UFRGS's "Listão" from the 2022 and 2023 editions.
 There are no warranties that it will run in future editions, as this is only a scraper and depends in the website layout, which can be changed by UFRGS at any time.
+
+> **NOTE:** A previous version worked for the years between 2016 and 2021, but that version stopped working recently
+> You might check it by looking at previous commits
 
 ---
 
@@ -17,7 +20,7 @@ You can clone this repository running `git clone https://github.com/rafaeelaudib
 
 After, you need to install the requirements, which can be easily installed with `npm install`.
 
-You should also configure the year you want to be searched in the .ENV file, writing a key/value pair, such as `YEAR=2019`.
+You should also configure the year you want to be searched in the .ENV file, writing a key/value pair, such as `YEAR=2023`.
 
 ---
 

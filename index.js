@@ -32,7 +32,7 @@ async function run() {
   let counter = 0;
 
   // Iterate over all the paths, to find the freshmen
-  console.log("Starting to acess all the paths");
+  console.log("Starting to access all the paths");
   for (let path of PATHS) {
     const new_path = DEFAULT_PATH + path + ".html";
     console.log(`Acessing path: ${new_path}`);
@@ -61,12 +61,12 @@ async function run() {
       }, selector);
 
       // If this course doesn't have an array yet, create it
-      if (freshmen[htmlElement[3]] == undefined) freshmen[htmlElement[3]] = [];
+      if (freshmen[htmlElement[4]] == undefined) freshmen[htmlElement[4]] = [];
 
       // Add the name and the starting semester for this freshman
-      freshmen[htmlElement[3]].push({
+      freshmen[htmlElement[4]].push({
         name: htmlElement[1],
-        semester: htmlElement[2],
+        semester: htmlElement[3],
       });
     }
   }
@@ -75,19 +75,19 @@ async function run() {
   // Write data to files
   console.log("Starting to write data fo files");
   await fs.mkdir("json");
+
   for (let course of Object.keys(freshmen)) {
     const students = freshmen[course];
     const parsedCourse = course.toLowerCase().replace(REGEX, "");
     const json = JSON.stringify(students);
-    const text = students
-      .map((s) => s.name + "\n")
-      .reduce((acc, val) => acc + val, "");
+    const text = students.map((s) => s.name + "\n").join("");
 
     console.log(`Creating files for ${parsedCourse}`);
     await fs.mkdir(`json/${parsedCourse}`);
     await fs.writeFile(`json/${parsedCourse}/freshmen.json`, json, "utf8");
     await fs.writeFile(`json/${parsedCourse}/freshmen.txt`, text, "utf8");
   }
+
   console.log("It's done! :D");
 
   // Closes the browser and its process
@@ -132,8 +132,8 @@ function main() {
 
 // Makes sure that here is a valid year
 assert.ok(
-  YEAR >= 2016 && YEAR <= 2021,
-  "The YEAR you want to access is not valid, use a YEAR between 2016 and 2021"
+  YEAR >= 2022 && YEAR <= 2023,
+  "The YEAR you want to access is not valid, use a YEAR between 2016 and 2023"
 );
 
 // Calls the main process
