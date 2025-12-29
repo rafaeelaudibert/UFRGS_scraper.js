@@ -3,6 +3,12 @@
   "version": "1.1.0",
   "description": "Scraper para buscar todos os ingressantes no Vestibular da UFRGS em um dado ano",
   "main": "index.js",
+  "bin": {
+    "ufrgs-scraper": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
   "engines": {
     "node": ">=24.12.0"
   },
@@ -14,8 +20,8 @@
   "author": "Rafael B. Audibert",
   "license": "ISC",
   "dependencies": {
-    "assert": "^1.4.1",
-    "dotenv": "^6.2.0",
+    "@clack/prompts": "^0.11.0",
+    "citty": "^0.1.6",
     "fs-extra": "^7.0.1",
     "puppeteer": "^22.11.2"
   }

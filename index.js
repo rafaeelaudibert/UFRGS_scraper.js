@@ -1,14 +1,13 @@
+#!/usr/bin/env node
+
 // Requires
 const puppeteer = require("puppeteer")
 const fs = require("fs-extra")
-const assert = require("assert")
+const { defineCommand, runMain } = require("citty")
+const { intro, outro, confirm, spinner, log, cancel, isCancel } = require("@clack/prompts")
 
 // Constants
-const YEAR = process.env.YEAR || 2022
-const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`
-const PATHS = Array(26)
-  .fill(0)
-  .map((_, index) => "arquivo_" + String.fromCharCode(index + 97))
+const currentYear = new Date().getFullYear()
 const TABLE_BODY_SELECTOR =
   "#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody"
 const TABLE_BODY_ROW_SELECTOR =
@@ -16,23 +15,29 @@ const TABLE_BODY_ROW_SELECTOR =
 const REGEX = /[\s:]/gm
 
 // Function which will actually run the scraper
-async function run() {
-  console.log("Initializing headless browser instance")
+async function run(year) {
+  const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${year}/listao/`
+  const PATHS = Array(26)
+    .fill(0)
+    .map((_, index) => "arquivo_" + String.fromCharCode(index + 97))
+
+  const s = spinner()
+  s.start("Initializing headless browser instance")
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   page.setDefaultNavigationTimeout(0) // To avoid timeouts
-
-  console.log("Browser initialized!")
+  s.stop("Headless browser initialized!")
 
   // Object which will store all the freshmen
   const freshmen = {}
   let counter = 0
 
   // Iterate over all the paths, to find the freshmen
-  console.log("Starting to access all the paths")
-  for (let path of PATHS) {
+  s.start(`Processing files (0/${PATHS.length})`)
+  for (let pathIndex = 0; pathIndex < PATHS.length; pathIndex++) {
+    const path = PATHS[pathIndex]
     const new_path = DEFAULT_PATH + path + ".html"
-    console.log(`Acessing path: ${new_path}`)
+    s.message(`Processing ${path}.html (${pathIndex + 1}/${PATHS.length})`)
 
     await page.goto(new_path)
 
@@ -68,71 +73,94 @@ async function run() {
       })
     }
   }
-  console.log(`Fetched ${counter} freshmen`)
+  s.stop(`Processed ${PATHS.length} files — fetched ${counter} freshmen`)
 
   // Write data to files
-  console.log("Starting to write data fo files")
+  const courses = Object.keys(freshmen).sort((a, b) => a.localeCompare(b))
+  s.start(`Writing files (0/${courses.length} courses)`)
   await fs.mkdir("json")
 
-  for (let course of Object.keys(freshmen).sort((a, b) => a.localeCompare(b))) {
+  for (let i = 0; i < courses.length; i++) {
+    const course = courses[i]
     const students = freshmen[course]
     const parsedCourse = course.toLowerCase().replace(REGEX, "")
     const json = JSON.stringify(students)
     const text = students.map((s) => s.name + "\n").join("")
 
-    console.log(`Creating files for ${parsedCourse}`)
+    s.message(`Writing files (${i + 1}/${courses.length} courses)`)
     await fs.mkdir(`json/${parsedCourse}`)
     await fs.writeFile(`json/${parsedCourse}/freshmen.json`, json, "utf8")
     await fs.writeFile(`json/${parsedCourse}/freshmen.txt`, text, "utf8")
   }
-
-  console.log("It's done! :D")
+  s.stop(`Wrote ${courses.length * 2} files for ${courses.length} courses`)
 
   // Closes the browser and its process
   browser.close()
 }
 
-// Main function
-function main() {
-  console.log(
-    "WARNING - ANY JSON NAMED FOLDER IN THIS DIRECTORY WILL BE REMOVED"
-  )
-  console.log("Insert YES (case sensitive) to continue... ")
+// Define CLI command
+const main = defineCommand({
+  meta: {
+    name: "ufrgs-scraper",
+    description: "Scraper para buscar todos os ingressantes no Vestibular da UFRGS em um dado ano",
+  },
+  args: {
+    year: {
+      type: "string",
+      description: `Year to scrape (e.g. ${currentYear})`,
+      default: String(currentYear),
+    },
+    yes: {
+      type: "boolean",
+      alias: "y",
+      description: "Skip confirmation prompt",
+      default: false,
+    },
+  },
+  async run({ args }) {
+    const year = parseInt(args.year, 10)
 
-  // Configures the prompt to the user
-  const std_in = process.stdin
-  std_in.setEncoding("utf-8")
-  std_in.on("data", async (data) => {
-    // Only run the code if the user prompted 'YES'
+    // Validate year
+    if (year < 2022) {
+      log.error("The YEAR you want to access is not valid. Only 2022 and later are supported.")
+      log.info("For older years, check previous commits in this repo.")
+      process.exit(1)
+    }
 
-    if (data === "YES\r\n" || data == "YES\n") {
+    intro(`UFRGS Vestibular Scraper - ${year}`)
+
+    // Check for confirmation
+    let shouldContinue = args.yes
+
+    if (!shouldContinue) {
+      log.warn("Any existing 'json' folder in this directory will be removed!")
+
+      const response = await confirm({
+        message: "Do you want to continue?",
+      })
+
+      if (isCancel(response) || !response) {
+        cancel("Operation cancelled.")
+        process.exit(0)
+      }
+
+      shouldContinue = true
+    }
+
+    if (shouldContinue) {
       const hrstart = process.hrtime()
 
       // Remove JSON folder and run the puppeteer code
-      fs.remove("json")
-      await run()
-      console.log("\n\nProgram concluded sucessfully!")
+      await fs.remove("json")
+      await run(year)
 
-      // Console.log the execution time
+      // Log the execution time
       const [seconds, nanoseconds] = process.hrtime(hrstart)
-      console.info(
-        "Execution time (hr): %ds %dms",
-        seconds,
-        nanoseconds / 1000000
-      )
-    } else {
-      console.log("Exiting without running the code!")
+      const ms = Math.round(nanoseconds / 1000000)
+
+      outro(`Done in ${seconds}s ${ms}ms`)
     }
+  },
+})
 
-    process.exit()
-  })
-}
-
-// Makes sure that there is a valid year
-assert.ok(
-  YEAR >= 2022,
-  "The YEAR you want to access is not valid. Only 2022 and later are supported. For older years, check previous commits in this repo."
-)
-
-// Calls the main process
-main()
+runMain(main)

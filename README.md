@@ -34,17 +34,38 @@ bun install
 
 ## Running the code
 
-Run the scraper by passing the `YEAR` environment variable inline:
+Run the scraper using the `--year` flag:
 
 ```bash
-YEAR=2025 bun start
+bun start --year 2025
 ```
 
-Replace `2025` with the desired year. **Only 2022 and later are supported** — the scraper will fail for any year before 2022.
+### Options
+
+| Flag | Description |
+|------|-------------|
+| `--year <year>` | Year to scrape (defaults to current year) |
+| `-y, --yes` | Skip confirmation prompt |
+
+### Examples
+
+```bash
+# Scrape current year (interactive)
+bun start
+
+# Scrape specific year
+bun start --year 2024
+
+# Skip confirmation (useful for CI/scripts)
+bun start --year 2025 --yes
+bun start -y
+```
+
+**Only 2022 and later are supported** — the scraper will fail for any year before 2022.
 
 > 💡 **Older years:** For years between 2016 and 2021, check out previous commits in this repository.
 
-> ⚠️ **Warning:** The code will erase any folder named `./json` in the root of the project. Make sure you don't have important data there before running. Type `YES` when prompted to confirm.
+> ⚠️ **Warning:** The code will erase any folder named `./json` in the root of the project. Make sure you don't have important data there before running.
 
 ---
 
