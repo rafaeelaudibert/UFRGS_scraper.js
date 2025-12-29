@@ -1,140 +1,138 @@
 // Requires
-const puppeteer = require("puppeteer");
-const fs = require("fs-extra");
-const assert = require("assert");
+const puppeteer = require("puppeteer")
+const fs = require("fs-extra")
+const assert = require("assert")
 
 // Constants
-const YEAR = process.env.YEAR || 2021;
-const DEFAULT_PATH =
-  YEAR >= 2019
-    ? `http://vestibular.ufrgs.br/cv${YEAR}/listao/`
-    : `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`;
+const YEAR = process.env.YEAR || 2022
+const DEFAULT_PATH = `https://www.ufrgs.br/vestibular/cv${YEAR}/listao/`
 const PATHS = Array(26)
   .fill(0)
-  .map((_, index) => "arquivo_" + String.fromCharCode(index + 97));
+  .map((_, index) => "arquivo_" + String.fromCharCode(index + 97))
 const TABLE_BODY_SELECTOR =
-  "#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody";
+  "#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody"
 const TABLE_BODY_ROW_SELECTOR =
-  "#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody > tr:nth-child(INDEX)";
-const REGEX = /[\s\-\:]/gm;
+  "#vestibular > div.container.row > div.listao.flow-text.highlight > table > tbody > tr:nth-child({INDEX})"
+const REGEX = /[\s:]/gm
 
 // Function which will actually run the scraper
 async function run() {
-  console.log("Initializing headless browser instance");
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  page.setDefaultNavigationTimeout(0); // To avoid timeouts
+  console.log("Initializing headless browser instance")
+  const browser = await puppeteer.launch()
+  const page = await browser.newPage()
+  page.setDefaultNavigationTimeout(0) // To avoid timeouts
 
-  console.log("Browser initialized!");
+  console.log("Browser initialized!")
 
   // Object which will store all the freshmen
-  const freshmen = {};
-  let counter = 0;
+  const freshmen = {}
+  let counter = 0
 
   // Iterate over all the paths, to find the freshmen
-  console.log("Starting to access all the paths");
+  console.log("Starting to access all the paths")
   for (let path of PATHS) {
-    const new_path = DEFAULT_PATH + path + ".html";
-    console.log(`Acessing path: ${new_path}`);
+    const new_path = DEFAULT_PATH + path + ".html"
+    console.log(`Acessing path: ${new_path}`)
 
-    await page.goto(new_path);
+    await page.goto(new_path)
 
     // Gets the quantity of freshmen in this path
     const freshmenLength = await page.evaluate((sel) => {
       try {
-        return document.querySelector(sel).childElementCount;
-      } catch (_) {
-        return 0;
+        return document.querySelector(sel).childElementCount
+      } catch {
+        return 0
       }
-    }, TABLE_BODY_SELECTOR);
-    counter += freshmenLength;
+    }, TABLE_BODY_SELECTOR)
+    counter += freshmenLength
 
     // Iterate through all the freshmen rows in this path
     for (let i = 0; i < freshmenLength; i++) {
-      const selector = TABLE_BODY_ROW_SELECTOR.replace("INDEX", i + 1);
+      const selector = TABLE_BODY_ROW_SELECTOR.replace("{INDEX}", i + 1)
       const htmlElement = await page.evaluate((sl) => {
-        const htmlElement = document.querySelector(sl).children;
+        const htmlElement = document.querySelector(sl).children
         const freshman = Array.from(htmlElement).map((el) =>
           el.innerText.replace("\n", "")
-        );
-        return freshman;
-      }, selector);
+        )
+
+        return freshman
+      }, selector)
 
       // If this course doesn't have an array yet, create it
-      if (freshmen[htmlElement[4]] == undefined) freshmen[htmlElement[4]] = [];
+      if (freshmen[htmlElement[4]] == undefined) freshmen[htmlElement[4]] = []
 
       // Add the name and the starting semester for this freshman
       freshmen[htmlElement[4]].push({
         name: htmlElement[1],
         semester: htmlElement[3],
-      });
+      })
     }
   }
-  console.log(`Fetched ${counter} freshmen`);
+  console.log(`Fetched ${counter} freshmen`)
 
   // Write data to files
-  console.log("Starting to write data fo files");
-  await fs.mkdir("json");
+  console.log("Starting to write data fo files")
+  await fs.mkdir("json")
 
-  for (let course of Object.keys(freshmen)) {
-    const students = freshmen[course];
-    const parsedCourse = course.toLowerCase().replace(REGEX, "");
-    const json = JSON.stringify(students);
-    const text = students.map((s) => s.name + "\n").join("");
+  for (let course of Object.keys(freshmen).sort((a, b) => a.localeCompare(b))) {
+    const students = freshmen[course]
+    const parsedCourse = course.toLowerCase().replace(REGEX, "")
+    const json = JSON.stringify(students)
+    const text = students.map((s) => s.name + "\n").join("")
 
-    console.log(`Creating files for ${parsedCourse}`);
-    await fs.mkdir(`json/${parsedCourse}`);
-    await fs.writeFile(`json/${parsedCourse}/freshmen.json`, json, "utf8");
-    await fs.writeFile(`json/${parsedCourse}/freshmen.txt`, text, "utf8");
+    console.log(`Creating files for ${parsedCourse}`)
+    await fs.mkdir(`json/${parsedCourse}`)
+    await fs.writeFile(`json/${parsedCourse}/freshmen.json`, json, "utf8")
+    await fs.writeFile(`json/${parsedCourse}/freshmen.txt`, text, "utf8")
   }
 
-  console.log("It's done! :D");
+  console.log("It's done! :D")
 
   // Closes the browser and its process
-  browser.close();
+  browser.close()
 }
 
 // Main function
 function main() {
   console.log(
     "WARNING - ANY JSON NAMED FOLDER IN THIS DIRECTORY WILL BE REMOVED"
-  );
-  console.log("Insert YES (case sensitive) to continue... ");
+  )
+  console.log("Insert YES (case sensitive) to continue... ")
 
   // Configures the prompt to the user
-  const std_in = process.stdin;
-  std_in.setEncoding("utf-8");
+  const std_in = process.stdin
+  std_in.setEncoding("utf-8")
   std_in.on("data", async (data) => {
     // Only run the code if the user prompted 'YES'
 
     if (data === "YES\r\n" || data == "YES\n") {
-      const hrstart = process.hrtime();
+      const hrstart = process.hrtime()
 
       // Remove JSON folder and run the puppeteer code
-      fs.remove("json");
-      await run();
-      console.log("\n\nProgram concluded sucessfully!");
+      fs.remove("json")
+      await run()
+      console.log("\n\nProgram concluded sucessfully!")
 
       // Console.log the execution time
-      const [seconds, nanoseconds] = process.hrtime(hrstart);
+      const [seconds, nanoseconds] = process.hrtime(hrstart)
       console.info(
         "Execution time (hr): %ds %dms",
         seconds,
         nanoseconds / 1000000
-      );
+      )
     } else {
-      console.log("Exiting without running the code!");
+      console.log("Exiting without running the code!")
     }
 
-    process.exit();
-  });
+    process.exit()
+  })
 }
 
-// Makes sure that here is a valid year
+// Makes sure that there is a valid year
 assert.ok(
-  YEAR >= 2022 && YEAR <= 2023,
-  "The YEAR you want to access is not valid, use a YEAR between 2016 and 2023"
-);
+  YEAR >= 2022,
+  "The YEAR you want to access is not valid. Only 2022 and later are supported. For older years, check previous commits in this repo."
+)
 
 // Calls the main process
-main();
+main()

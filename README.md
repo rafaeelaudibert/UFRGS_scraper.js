@@ -1,34 +1,50 @@
 # UFRGS - Vestibular Scraper
 
-Scraper written in `JavaScript`, using `Node.js` to fetch all the freshmen in UFRGS vestibular.
+Scraper written in JavaScript using [Bun](https://bun.sh) to fetch all freshmen from the UFRGS vestibular.
 
-There is also a `Shell` scraper with less functionalities but a lot faster
+This code is tested to run on UFRGS's "Listão" from the 2022 to the 2025 editions.
+There are no warranties that it will run in future editions, as this is only a scraper and depends on the website layout, which can be changed by UFRGS at any time.
 
-This code is tested to run in UFRGS's "Listão" from the 2022 and 2023 editions.
-There are no warranties that it will run in future editions, as this is only a scraper and depends in the website layout, which can be changed by UFRGS at any time.
-
-> **NOTE:** A previous version worked for the years between 2016 and 2021, but that version stopped working recently
-> You might check it by looking at previous commits
+> **NOTE:** A previous version worked for the years between 2016 and 2021, but that version stopped working recently.
+> You might check it by looking at previous commits.
 
 ---
 
-## Configuring
+## Prerequisites
 
-You must have `Node.js` installed in your computer to run this code. You can download it [here](https://nodejs.org/en/download/).
+You must have [Bun](https://bun.sh) installed on your computer. You can install it by running:
 
-You can clone this repository running `git clone https://github.com/rafaeelaudibert/UFRGS_scraper.js.git && cd UFRGS_scraper`.
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
 
-After, you need to install the requirements, which can be easily installed with `npm install`.
+---
 
-You should also configure the year you want to be searched in the .ENV file, writing a key/value pair, such as `YEAR=2023`.
+## Installation
+
+Clone this repository and install dependencies:
+
+```bash
+git clone https://github.com/rafaeelaudibert/UFRGS_scraper.js.git
+cd UFRGS_scraper.js
+bun install
+```
 
 ---
 
 ## Running the code
 
-To run the code you can simply run `npm start`.
+Run the scraper by passing the `YEAR` environment variable inline:
 
-The code will erase any folder with the name `./json` in the root of the project, so be sure to not have important information in it before running the code and typing `YES` when prompted.
+```bash
+YEAR=2025 bun start
+```
+
+Replace `2025` with the desired year. **Only 2022 and later are supported** — the scraper will fail for any year before 2022.
+
+> 💡 **Older years:** For years between 2016 and 2021, check out previous commits in this repository.
+
+> ⚠️ **Warning:** The code will erase any folder named `./json` in the root of the project. Make sure you don't have important data there before running. Type `YES` when prompted to confirm.
 
 ---
 
