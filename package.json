@@ -1,6 +1,6 @@
 {
   "name": "ufrgs_scraper",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Scraper para buscar todos os calouros no Vestibular da UFRGS em um dado ano",
   "main": "index.js",
   "bin": {

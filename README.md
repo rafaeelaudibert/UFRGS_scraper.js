@@ -1,6 +1,6 @@
 # UFRGS - Vestibular Scraper
 
-Scraper escrito em JavaScript usando [Bun](https://bun.sh) para buscar todos os calouros do vestibular da UFRGS.
+Scraper para buscar todos os calouros do vestibular da UFRGS.
 
 Este código foi testado para funcionar no "Listão" da UFRGS das edições de 2022 a 2025.
 Não há garantias de que funcionará em edições futuras, pois é apenas um scraper e depende do layout do site, que pode ser alterado pela UFRGS a qualquer momento.
@@ -8,17 +8,38 @@ Não há garantias de que funcionará em edições futuras, pois é apenas um sc
 > **NOTA:** Uma versão anterior desse script funcionava para os anos entre 2016 e 2021, mas essa versão deixou de funcionar quando a UFRGS atualizou o formato do site.
 > Você pode verificá-la olhando commits anteriores.
 
-## Pré-requisitos
+## Instalação
 
-Você deve ter o [Bun](https://bun.sh) instalado no seu computador. Você pode instalá-lo executando:
+### Opção 1: Baixar executável (recomendado)
+
+> **Requisito:** O executável precisa do Google Chrome ou Chromium instalado no sistema.
+
+#### Linux
+
+```bash
+curl -L -o ufrgs-scraper https://github.com/rafaeelaudibert/UFRGS_scraper.js/releases/latest/download/ufrgs-scraper-linux
+chmod +x ufrgs-scraper
+./ufrgs-scraper --help
+```
+
+#### Windows (PowerShell)
+
+```powershell
+Invoke-WebRequest -Uri "https://github.com/rafaeelaudibert/UFRGS_scraper.js/releases/latest/download/ufrgs-scraper-windows.exe" -OutFile "ufrgs-scraper.exe"
+.\ufrgs-scraper.exe --help
+```
+
+Ou baixe manualmente na [página de releases](https://github.com/rafaeelaudibert/UFRGS_scraper.js/releases/latest).
+
+### Opção 2: Rodar via código-fonte
+
+Você precisa ter o [Bun](https://bun.sh) instalado:
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
 ```
 
-## Instalação
-
-Clone este repositório e instale as dependências:
+Clone o repositório e instale as dependências:
 
 ```bash
 git clone https://github.com/rafaeelaudibert/UFRGS_scraper.js.git
@@ -26,9 +47,16 @@ cd UFRGS_scraper.js
 bun install
 ```
 
-## Executando o código
+## Executando
 
-Execute o scraper usando a flag `--ano`:
+### Via executável
+
+```bash
+./ufrgs-scraper --ano 2025       # Linux
+.\ufrgs-scraper.exe --ano 2025   # Windows
+```
+
+### Via código-fonte
 
 ```bash
 bun rodar --ano 2025
@@ -45,14 +73,14 @@ bun rodar --ano 2025
 
 ```bash
 # Buscar ano atual (interativo)
-bun rodar
+./ufrgs-scraper
 
 # Buscar ano específico
-bun rodar --ano 2024
+./ufrgs-scraper --ano 2024
 
 # Pular confirmação (útil para CI/scripts)
-bun rodar --ano 2025 --sim
-bun rodar -s
+./ufrgs-scraper --ano 2025 --sim
+./ufrgs-scraper -s
 ```
 
 **Apenas 2022 e posteriores são suportados** — o scraper falhará para qualquer ano anterior a 2022.
