@@ -1,13 +1,13 @@
 {
   "name": "ufrgs_scraper",
   "version": "1.1.0",
-  "description": "Scraper para buscar todos os ingressantes no Vestibular da UFRGS em um dado ano",
+  "description": "Scraper para buscar todos os calouros no Vestibular da UFRGS em um dado ano",
   "main": "index.js",
   "bin": {
     "ufrgs-scraper": "./index.js"
   },
   "scripts": {
-    "start": "node index.js"
+    "rodar": "node index.js"
   },
   "engines": {
     "node": ">=24.12.0"

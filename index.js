@@ -22,22 +22,22 @@ async function run(year) {
     .map((_, index) => "arquivo_" + String.fromCharCode(index + 97))
 
   const s = spinner()
-  s.start("Initializing headless browser instance")
+  s.start("Inicializando navegador headless")
   const browser = await puppeteer.launch()
   const page = await browser.newPage()
   page.setDefaultNavigationTimeout(0) // To avoid timeouts
-  s.stop("Headless browser initialized!")
+  s.stop("Navegador headless inicializado!")
 
   // Object which will store all the freshmen
   const freshmen = {}
   let counter = 0
 
-  // Iterate over all the paths, to find the freshmen
-  s.start(`Processing files (0/${PATHS.length})`)
+  // Itera sobre todos os paths para encontrar os calouros
+  s.start(`Processando arquivos (0/${PATHS.length})`)
   for (let pathIndex = 0; pathIndex < PATHS.length; pathIndex++) {
     const path = PATHS[pathIndex]
     const new_path = DEFAULT_PATH + path + ".html"
-    s.message(`Processing ${path}.html (${pathIndex + 1}/${PATHS.length})`)
+    s.message(`Processando ${path}.html (${pathIndex + 1}/${PATHS.length})`)
 
     await page.goto(new_path)
 
@@ -73,11 +73,11 @@ async function run(year) {
       })
     }
   }
-  s.stop(`Processed ${PATHS.length} files — fetched ${counter} freshmen`)
+  s.stop(`${PATHS.length} arquivos processados — ${counter} calouros encontrados`)
 
   // Write data to files
   const courses = Object.keys(freshmen).sort((a, b) => a.localeCompare(b))
-  s.start(`Writing files (0/${courses.length} courses)`)
+  s.start(`Escrevendo arquivos (0/${courses.length} cursos)`)
   await fs.mkdir("json")
 
   for (let i = 0; i < courses.length; i++) {
@@ -87,12 +87,12 @@ async function run(year) {
     const json = JSON.stringify(students)
     const text = students.map((s) => s.name + "\n").join("")
 
-    s.message(`Writing files (${i + 1}/${courses.length} courses)`)
+    s.message(`Escrevendo arquivos (${i + 1}/${courses.length} cursos)`)
     await fs.mkdir(`json/${parsedCourse}`)
-    await fs.writeFile(`json/${parsedCourse}/freshmen.json`, json, "utf8")
-    await fs.writeFile(`json/${parsedCourse}/freshmen.txt`, text, "utf8")
+    await fs.writeFile(`json/${parsedCourse}/calouros.json`, json, "utf8")
+    await fs.writeFile(`json/${parsedCourse}/calouros.txt`, text, "utf8")
   }
-  s.stop(`Wrote ${courses.length * 2} files for ${courses.length} courses`)
+  s.stop(`${courses.length * 2} arquivos escritos para ${courses.length} cursos`)
 
   // Closes the browser and its process
   browser.close()
@@ -102,45 +102,45 @@ async function run(year) {
 const main = defineCommand({
   meta: {
     name: "ufrgs-scraper",
-    description: "Scraper para buscar todos os ingressantes no Vestibular da UFRGS em um dado ano",
+    description: "Scraper para buscar todos os calouros no Vestibular da UFRGS em um dado ano",
   },
   args: {
-    year: {
+    ano: {
       type: "string",
-      description: `Year to scrape (e.g. ${currentYear})`,
+      description: `Ano para buscar (ex: ${currentYear})`,
       default: String(currentYear),
     },
-    yes: {
+    sim: {
       type: "boolean",
-      alias: "y",
-      description: "Skip confirmation prompt",
+      alias: "s",
+      description: "Pular confirmação",
       default: false,
     },
   },
   async run({ args }) {
-    const year = parseInt(args.year, 10)
+    const year = parseInt(args.ano, 10)
 
     // Validate year
     if (year < 2022) {
-      log.error("The YEAR you want to access is not valid. Only 2022 and later are supported.")
-      log.info("For older years, check previous commits in this repo.")
+      log.error("O ano informado não é válido. Apenas 2022 e posteriores são suportados.")
+      log.info("Para anos anteriores, verifique commits anteriores neste repositório.")
       process.exit(1)
     }
 
     intro(`UFRGS Vestibular Scraper - ${year}`)
 
     // Check for confirmation
-    let shouldContinue = args.yes
+    let shouldContinue = args.sim
 
     if (!shouldContinue) {
-      log.warn("Any existing 'json' folder in this directory will be removed!")
+      log.warn("A pasta 'json' existente neste diretório será removida!")
 
       const response = await confirm({
-        message: "Do you want to continue?",
+        message: "Deseja continuar?",
       })
 
       if (isCancel(response) || !response) {
-        cancel("Operation cancelled.")
+        cancel("Operação cancelada.")
         process.exit(0)
       }
 
@@ -158,7 +158,7 @@ const main = defineCommand({
       const [seconds, nanoseconds] = process.hrtime(hrstart)
       const ms = Math.round(nanoseconds / 1000000)
 
-      outro(`Done in ${seconds}s ${ms}ms`)
+      outro(`Concluído em ${seconds}s ${ms}ms`)
     }
   },
 })
